@@ -1,0 +1,213 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+		"apps": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/definitions/App" }
+		}
+	},
+	"required": ["apps"],
+	"definitions": {
+		"App": {
+			"type": "object",
+			"properties": {
+				"upstream": { "$ref": "#/definitions/Upstream" },
+				"auth": {
+					"oneOf": [
+						{
+							"type": "array",
+							"items": { "$ref": "#/definitions/Auth" }
+						},
+						{ "type": "null" }
+					],
+					"default": null
+				},
+				"endpoints": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/Endpoint" }
+				},
+				"quota": {
+					"oneOf": [{ "$ref": "#/definitions/Quota" }, { "type": "null" }],
+					"default": null
+				},
+				"jwt": {
+					"oneOf": [
+						{
+							"type": "array",
+							"items": { "$ref": "#/definitions/AuthJwt" }
+						},
+						{ "type": "null" }
+					],
+					"default": null
+				},
+				"basic": {
+					"oneOf": [{ "$ref": "#/definitions/AuthBasic" }, { "type": "null" }],
+					"default": null
+				}
+			},
+			"required": ["upstream", "endpoints"]
+		},
+		"Auth": {
+			"type": "object",
+			"properties": {
+				"token": {
+					"type": "string"
+				},
+				"quota": {
+					"oneOf": [{ "$ref": "#/definitions/Quota" }, { "type": "null" }],
+					"default": null
+				}
+			},
+			"required": ["token"]
+		},
+		"AuthBasic": {
+			"type": "object",
+			"properties": {
+				"credentials": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"username": { "type": "string" },
+							"password": { "type": "string" }
+						},
+						"required": ["username", "password"]
+					}
+				}
+			},
+			"required": ["credentials"]
+		},
+		"AuthJwt": {
+			"type": "object",
+			"properties": {
+				"keys-url": {
+					"type": "string",
+					"format": "uri"
+				},
+				"claims": {
+					"oneOf": [
+						{
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"claim": { "type": "string" },
+									"header": { "type": "string" }
+								},
+								"required": ["username", "password"]
+							}
+						},
+						{ "type": "null" }
+					],
+					"default": null
+				}
+			},
+			"required": ["keys-url"]
+		},
+		"Cache": {
+			"type": "object",
+			"properties": {
+				"expire-in": { "$ref": "#/definitions/Time" },
+				"vary-headers": {
+					"oneOf": [
+						{
+							"type": "array",
+							"items": { "type": "string" }
+						},
+						{ "type": "null" }
+					],
+					"default": null
+				}
+			},
+			"required": ["expire-in"]
+		},
+		"Endpoint": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string",
+					"format": "regex",
+					"pattern": "^/[^/]+(?:/[^/]+)*$"
+				},
+				"id": { "type": "string" },
+				"method": { "$ref": "#/definitions/Method" },
+				"quota": {
+					"oneOf": [{ "$ref": "#/definitions/Quota" }, { "type": "null" }],
+					"default": null
+				},
+				"cache": {
+					"oneOf": [{ "$ref": "#/definitions/Cache" }, { "type": "null" }],
+					"default": null
+				},
+				"auth": {
+					"oneOf": [
+						{
+							"type": "array",
+							"items": { "$ref": "#/definitions/Auth" }
+						},
+						{ "type": "null" }
+					],
+					"default": null
+				}
+			},
+			"required": ["path", "id", "method"]
+		},
+		"Method": {
+			"enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
+		},
+		"Quota": {
+			"type": "object",
+			"properties": {
+				"total": { "$ref": "#/definitions/Frequency" },
+				"user": {
+					"oneOf": [{ "$ref": "#/definitions/Frequency" }, { "type": "null" }],
+					"default": null
+				}
+			},
+			"required": ["total"]
+		},
+		"Frequency": {
+			"type": "object",
+			"properties": {
+				"amount": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"interval": { "$ref": "#/definitions/Time" }
+			},
+			"required": ["amount", "interval"]
+		},
+		"Time": {
+			"type": "object",
+			"properties": {
+				"amount": { "type": "integer" },
+				"unit": { "$ref": "#/definitions/TimeUnit" }
+			},
+			"required": ["amount", "unit"]
+		},
+		"TimeUnit": {
+			"enum": ["seconds", "minutes", "hours", "days"]
+		},
+		"Upstream": {
+			"type": "object",
+			"properties": {
+				"host": {
+					"type": "string",
+					"format": "hostname"
+				},
+				"port": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 65535,
+					"default": 80
+				},
+				"tls": {
+					"type": "boolean",
+					"default": false
+				}
+			},
+			"required": ["host"]
+		}
+	}
+}
