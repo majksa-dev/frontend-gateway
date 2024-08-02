@@ -492,6 +492,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "bb8-redis"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c6910977c026bb1d0a6b523508d1a893d6d4c2ba216355e9569d8181d92ccbe"
+dependencies = [
+ "async-trait",
+ "bb8",
+ "redis 0.26.0",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1362,7 +1373,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
- "bb8-redis",
+ "bb8-redis 0.16.0",
  "chrono",
  "derive_more",
  "envy",
@@ -1503,12 +1514,12 @@ dependencies = [
 
 [[package]]
 name = "gateway"
-version = "0.8.1"
-source = "git+https://github.com/majksa-dev/rust-gateway?tag=0.8.1#bf78134711484418c92b5b4f37b72dabdf5555a0"
+version = "0.8.2"
+source = "git+https://github.com/majksa-dev/rust-gateway?tag=0.8.2#1fbbdaaebee2830b1a2d082a8457cc2565c1d814"
 dependencies = [
  "anyhow",
  "async-trait",
- "bb8-redis",
+ "bb8-redis 0.15.0",
  "chrono",
  "essentials",
  "futures",
@@ -3199,13 +3210,19 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8cc5b667390cb038bc65fc4b18c06e2550469f7e06a02d886f1a018a11f63563"
 dependencies = [
  "arc-swap",
+ "async-trait",
+ "bytes 1.6.0",
  "combine",
+ "futures-util",
  "itoa",
  "num-bigint",
  "percent-encoding",
+ "pin-project-lite",
  "ryu",
  "sha1_smol",
  "socket2 0.5.7",
+ "tokio",
+ "tokio-util",
  "url",
 ]
 
@@ -3803,9 +3820,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.121"
+version = "1.0.122"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ab380d7d9f22ef3f21ad3e6c1ebe8e4fc7a2000ccba2e4d71fc96f15b2cb609"
+checksum = "784b6203951c57ff748476b126ccb5e8e2959a5c19e5c617ab1956be3dbc68da"
 dependencies = [
  "itoa",
  "memchr",
