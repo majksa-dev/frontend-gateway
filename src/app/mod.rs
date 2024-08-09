@@ -1,10 +1,12 @@
 pub mod rewrite_static;
+mod start_router;
 
 use crate::config::apps::Apps;
 use anyhow::{Context, Result};
 use bb8_redis::{bb8::Pool, RedisConnectionManager};
-use gateway::{self, cache, http::HeaderMapExt, tcp, ParamRouterBuilder, Request, Server};
+use gateway::{self, cache, http::HeaderMapExt, tcp, Request, Server};
 use http::header;
+use start_router::RouterBuilder;
 use std::{net::IpAddr, path::Path};
 use tokio::fs;
 
@@ -73,7 +75,7 @@ pub async fn build(env: Env) -> Result<Server> {
                 .endpoints
                 .into_iter()
                 .map(|endpoint| (endpoint.method.into(), endpoint.path, endpoint.id))
-                .collect::<ParamRouterBuilder>(),
+                .collect::<RouterBuilder>(),
         );
     }
     builder.build().await

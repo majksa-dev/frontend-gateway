@@ -104,13 +104,14 @@ fn single_server_config(ports: &[u16]) -> serde_json::Value {
                 },
                 "endpoints": [
                     {
-                        "path": "/hello",
-                        "id": "hello",
-                        "method": "GET"
+                        "path": "/hi",
+                        "id": "hi",
+                        "method": "GET",
+                        "rewrite": "hello"
                     },
                     {
-                        "path": "/hey",
-                        "id": "hey",
+                        "path": "/",
+                        "id": "web",
                         "method": "GET",
                         "rewrite": [
                             {
@@ -118,12 +119,6 @@ fn single_server_config(ports: &[u16]) -> serde_json::Value {
                                 "to": "ello"
                             }
                         ]
-                    },
-                    {
-                        "path": "/hi",
-                        "id": "hi",
-                        "method": "GET",
-                        "rewrite": "hello"
                     }
                 ]
             }
