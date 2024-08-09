@@ -7,6 +7,17 @@ use super::config;
 
 pub struct Endpoint {
     pub rewrite: Rewrite,
+    pub cdn_app: Option<Box<str>>,
+}
+
+impl Endpoint {
+    pub fn rewrite(&self, path: String) -> String {
+        if let Some(app) = self.cdn_app.as_ref() {
+            format!("{}/{}", app, self.rewrite.rewrite(path))
+        } else {
+            self.rewrite.rewrite(path)
+        }
+    }
 }
 
 #[async_trait]
@@ -16,6 +27,7 @@ impl ConfigToContext for config::Endpoint {
     async fn into_context(self) -> Result<Self::Context> {
         Ok(Endpoint {
             rewrite: self.rewrite.into_context().await?,
+            cdn_app: self.cdn_app.into_context().await?,
         })
     }
 }
@@ -23,10 +35,11 @@ impl ConfigToContext for config::Endpoint {
 pub enum Rewrite {
     Full(Box<str>),
     SearchAndReplace(Box<[Substitution]>),
+    None,
 }
 
 impl Rewrite {
-    pub fn rewrite(&self, path: String) -> String {
+    fn rewrite(&self, path: String) -> String {
         match self {
             Rewrite::Full(replacement) => {
                 if replacement.starts_with('/') {
@@ -40,6 +53,7 @@ impl Rewrite {
                     path.replace(substitution.get_from(), substitution.get_to())
                 })
             }
+            Rewrite::None => path,
         }
     }
 }
@@ -62,6 +76,7 @@ impl ConfigToContext for config::Rewrite {
                 .into_iter()
                 .collect::<Result<Box<[_]>>>()?,
             ),
+            None => Rewrite::None,
         })
     }
 }

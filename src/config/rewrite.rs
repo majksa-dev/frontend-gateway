@@ -1,9 +1,18 @@
 use crate::app::rewrite_static;
 use serde::Deserialize;
 
-impl From<&Rewrite> for rewrite_static::config::Endpoint {
-    fn from(value: &Rewrite) -> Self {
-        Self::new(value.into())
+use super::{app::AppConfig, endpoint::Endpoint};
+
+impl From<(&AppConfig, &Endpoint)> for rewrite_static::config::Endpoint {
+    fn from((app, endpoint): (&AppConfig, &Endpoint)) -> Self {
+        Self::new(
+            endpoint.rewrite.as_ref().into(),
+            if app.upstream.is_none() {
+                Some(app.name.clone())
+            } else {
+                None
+            },
+        )
     }
 }
 
@@ -14,17 +23,18 @@ pub enum Rewrite {
     SearchAndReplace(Vec<Substitution>),
 }
 
-impl From<&Rewrite> for rewrite_static::config::Rewrite {
-    fn from(value: &Rewrite) -> Self {
+impl From<Option<&Rewrite>> for rewrite_static::config::Rewrite {
+    fn from(value: Option<&Rewrite>) -> Self {
         use rewrite_static::config::Rewrite::*;
         match value {
-            Rewrite::Full(full) => Full(full.clone()),
-            Rewrite::SearchAndReplace(substitutions) => SearchAndReplace(
+            Some(Rewrite::Full(full)) => Full(full.clone()),
+            Some(Rewrite::SearchAndReplace(substitutions)) => SearchAndReplace(
                 substitutions
                     .iter()
                     .map(|substitution| substitution.into())
                     .collect(),
             ),
+            Option::None => None,
         }
     }
 }

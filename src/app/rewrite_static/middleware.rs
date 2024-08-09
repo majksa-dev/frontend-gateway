@@ -25,7 +25,7 @@ impl gateway::Middleware for Middleware {
                 return next.run(request).await;
             }
         };
-        request.path = endpoint.rewrite.rewrite(request.path);
+        request.path = endpoint.rewrite(request.path);
         next.run(request).await
     }
 }

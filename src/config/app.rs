@@ -50,13 +50,11 @@ impl From<&AppConfig> for HashMap<String, rewrite_static::config::Endpoint> {
         value
             .endpoints
             .iter()
-            .filter_map(|endpoint| {
-                endpoint.rewrite.as_ref().map(|rewrite| {
-                    (
-                        endpoint.id.clone(),
-                        rewrite_static::config::Endpoint::from(rewrite),
-                    )
-                })
+            .map(|endpoint| {
+                (
+                    endpoint.id.clone(),
+                    rewrite_static::config::Endpoint::from((value, endpoint)),
+                )
             })
             .collect()
     }
