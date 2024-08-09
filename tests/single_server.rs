@@ -36,6 +36,18 @@ async fn should_succeed(ctx: Context) -> Context {
 }
 
 #[utils::test(setup = before_each, teardown = after_each)]
+async fn should_succeed_when_calling_cdn(ctx: Context) -> Context {
+    let status = surf::get(format!("http://127.0.0.1:{}/hello", &ctx.app))
+        .header("X-Real-IP", "1.2.3.4")
+        .header("Host", "static")
+        .await
+        .unwrap()
+        .status();
+    assert_eq!(status as u16, 200);
+    ctx
+}
+
+#[utils::test(setup = before_each, teardown = after_each)]
 async fn should_fail_when_calling_without_host(ctx: Context) -> Context {
     let status = surf::get(format!("http://127.0.0.1:{}/hello", &ctx.app))
         .await
@@ -94,7 +106,7 @@ fn single_server_config(ports: &[u16]) -> serde_json::Value {
     json!({
         "cdn": {
             "host": "localhost",
-            "port": 0
+            "port": ports[1]
         },
         "apps": {
             "app": {
@@ -119,6 +131,15 @@ fn single_server_config(ports: &[u16]) -> serde_json::Value {
                                 "to": "ello"
                             }
                         ]
+                    }
+                ]
+            },
+            "static": {
+                "endpoints": [
+                    {
+                        "path": "/",
+                        "id": "web",
+                        "method": "GET"
                     }
                 ]
             }
@@ -151,9 +172,14 @@ async fn before_each() -> Context {
         .respond_with(ResponseTemplate::new(200))
         .mount(&mock_server)
         .await;
+    Mock::given(method("GET"))
+        .and(path("/static/hello"))
+        .respond_with(ResponseTemplate::new(200))
+        .mount(&mock_server)
+        .await;
 
     let ports = get_random_ports(2);
-    let config = single_server_config(&[origin]);
+    let config = single_server_config(&[origin, origin]);
     let temp = fs::TempDir::new().unwrap();
     let input_file = temp.child("config.json");
     input_file.touch().unwrap();

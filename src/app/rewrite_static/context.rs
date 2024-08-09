@@ -13,7 +13,7 @@ pub struct Endpoint {
 impl Endpoint {
     pub fn rewrite(&self, path: String) -> String {
         if let Some(app) = self.cdn_app.as_ref() {
-            format!("{}/{}", app, self.rewrite.rewrite(path))
+            format!("/{}{}", app, self.rewrite.rewrite(path))
         } else {
             self.rewrite.rewrite(path)
         }
