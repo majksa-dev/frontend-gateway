@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.0...v0.2.1) (2024-08-09)
+
+
+### Bug Fixes
+
+* **deps:** bump the dependencies group across 1 directory with 6 updates ([3cb583a](https://github.com/majksa-dev/frontend-gateway/commit/3cb583a38260751dbce3b59167e2468289a00f3c))
+* **deps:** remove unused and bump gateway ([714da84](https://github.com/majksa-dev/frontend-gateway/commit/714da846f1cfb1420a1fba0b8ec1f5b7b4eceb14))
+
 ## [0.2.0](https://github.com/majksa-dev/frontend-gateway/compare/v0.1.0...v0.2.0) (2024-08-09)
 
 
