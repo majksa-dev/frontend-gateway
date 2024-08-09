@@ -1,5 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
+use essentials::debug;
 use futures_util::future::join_all;
 use gateway::ConfigToContext;
 
@@ -12,11 +13,14 @@ pub struct Endpoint {
 
 impl Endpoint {
     pub fn rewrite(&self, path: String) -> String {
-        if let Some(app) = self.cdn_app.as_ref() {
+        debug!(from = path, "Rewriting path");
+        let result = if let Some(app) = self.cdn_app.as_ref() {
             format!("/{}{}", app, self.rewrite.rewrite(path))
         } else {
             self.rewrite.rewrite(path)
-        }
+        };
+        debug!(to = result, "Rewriting path");
+        result
     }
 }
 
