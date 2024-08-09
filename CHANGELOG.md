@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.4](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.3...v0.2.4) (2024-08-09)
+
+
+### Bug Fixes
+
+* add debug for rewrites ([a40ff34](https://github.com/majksa-dev/frontend-gateway/commit/a40ff34860cee934e53622ab14c9a44c5acd8183))
+* full rewrite ([6775e4e](https://github.com/majksa-dev/frontend-gateway/commit/6775e4e8fce2df0f11f98ff49fe76463156d1b5b))
+
 ## [0.2.3](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.2...v0.2.3) (2024-08-09)
 
 
