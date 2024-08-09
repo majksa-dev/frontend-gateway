@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.2...v0.2.3) (2024-08-09)
+
+
+### Bug Fixes
+
+* cdn routing ([02681a8](https://github.com/majksa-dev/frontend-gateway/commit/02681a8f82e75d884e8b885e9e4e6e299304fed8))
+
 ## [0.2.2](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.1...v0.2.2) (2024-08-09)
 
 
