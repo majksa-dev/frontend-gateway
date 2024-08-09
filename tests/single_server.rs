@@ -64,7 +64,7 @@ async fn should_fail_when_calling_invalid_endpoint(ctx: Context) -> Context {
         .await
         .unwrap()
         .status();
-    assert_eq!(status as u16, 403);
+    assert_eq!(status as u16, 404);
     ctx
 }
 

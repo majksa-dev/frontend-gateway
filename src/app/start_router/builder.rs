@@ -11,20 +11,6 @@ pub struct RouterBuilder {
     routes: Vec<Route>,
 }
 
-impl RouterBuilder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn add_route(mut self, method: Method, mut path: String, endpoint_id: String) -> Self {
-        if path.ends_with('/') {
-            path.pop();
-        }
-        self.routes.push((method, path, endpoint_id));
-        self
-    }
-}
-
 impl gateway::RouterBuilder for RouterBuilder {
     fn build(self: Box<Self>) -> (Vec<String>, RouterService) {
         (
