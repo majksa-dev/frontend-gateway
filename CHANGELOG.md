@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.1...v0.2.2) (2024-08-09)
+
+
+### Bug Fixes
+
+* **cdn:** rewrite base path of cdn app ([b32c4d6](https://github.com/majksa-dev/frontend-gateway/commit/b32c4d6ce3170feee39064b7bc12e03f333ecebe))
+* **dockerfile:** environment variables ([41fc52b](https://github.com/majksa-dev/frontend-gateway/commit/41fc52b256204cf58975126af21011d38425136e))
+
 ## [0.2.1](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.0...v0.2.1) (2024-08-09)
 
 
