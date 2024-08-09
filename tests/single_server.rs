@@ -68,8 +68,34 @@ async fn should_fail_when_calling_invalid_endpoint(ctx: Context) -> Context {
     ctx
 }
 
+#[utils::test(setup = before_each, teardown = after_each)]
+async fn should_succeed_when_calling_rewritable_endpoint(ctx: Context) -> Context {
+    let status = surf::get(format!("http://127.0.0.1:{}/hey", &ctx.app))
+        .header("Host", "app")
+        .await
+        .unwrap()
+        .status();
+    assert_eq!(status as u16, 200);
+    ctx
+}
+
+#[utils::test(setup = before_each, teardown = after_each)]
+async fn should_succeed_when_calling_rewritable_endpoint_2(ctx: Context) -> Context {
+    let status = surf::get(format!("http://127.0.0.1:{}/hi", &ctx.app))
+        .header("Host", "app")
+        .await
+        .unwrap()
+        .status();
+    assert_eq!(status as u16, 200);
+    ctx
+}
+
 fn single_server_config(ports: &[u16]) -> serde_json::Value {
     json!({
+        "cdn": {
+            "host": "localhost",
+            "port": 0
+        },
         "apps": {
             "app": {
                 "upstream": {
@@ -81,6 +107,23 @@ fn single_server_config(ports: &[u16]) -> serde_json::Value {
                         "path": "/hello",
                         "id": "hello",
                         "method": "GET"
+                    },
+                    {
+                        "path": "/hey",
+                        "id": "hey",
+                        "method": "GET",
+                        "rewrite": [
+                            {
+                                "from": "ey",
+                                "to": "ello"
+                            }
+                        ]
+                    },
+                    {
+                        "path": "/hi",
+                        "id": "hi",
+                        "method": "GET",
+                        "rewrite": "hello"
                     }
                 ]
             }

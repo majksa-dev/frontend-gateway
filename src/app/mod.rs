@@ -1,3 +1,5 @@
+pub mod rewrite_static;
+
 use crate::config::apps::Apps;
 use anyhow::{Context, Result};
 use bb8_redis::{bb8::Pool, RedisConnectionManager};
@@ -24,11 +26,12 @@ async fn load_config(config_path: impl AsRef<Path>) -> Result<Apps> {
     Apps::new(config_data).with_context(|| "Failed to parse config file")
 }
 
-fn peer_key_from_host() -> impl Fn(&Request) -> Option<String> + Send + Sync + 'static {
+fn peer_key_from_host(
+) -> impl Fn(&Request) -> Option<(String, Option<String>)> + Send + Sync + 'static {
     |req: &Request| {
         req.header(header::HOST)
             .and_then(|host| host.to_str().ok())
-            .map(|host| host.to_string())
+            .map(|host| (host.to_string(), None))
     }
 }
 
@@ -43,10 +46,9 @@ pub async fn build(env: Env) -> Result<Server> {
                 .map(|(name, app)| {
                     (
                         name.clone(),
-                        tcp::config::Connection::new(format!(
-                            "{}:{}",
-                            app.upstream.host, app.upstream.port
-                        )),
+                        tcp::config::Connection::new(
+                            app.upstream.as_ref().unwrap_or(&config.cdn).to_string(),
+                        ),
                     )
                 })
                 .collect(),
@@ -56,8 +58,9 @@ pub async fn build(env: Env) -> Result<Server> {
     .with_app_port(env.port.unwrap_or(80))
     .with_health_check_port(env.healthcheck_port.unwrap_or(9000))
     .with_host(env.host.unwrap_or(IpAddr::from([127, 0, 0, 1])))
+    .register_middleware(1, rewrite_static::Builder::build((&config).into()))
     .register_middleware(
-        1,
+        2,
         cache::Builder::build(
             (&config).into(),
             cache::datastore::RedisDatastore::new(redis_cache),

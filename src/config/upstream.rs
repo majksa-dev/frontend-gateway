@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
@@ -16,5 +18,11 @@ impl Upstream {
 
     pub fn default_tls() -> bool {
         false
+    }
+}
+
+impl Display for Upstream {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}:{}", self.host, self.port)
     }
 }

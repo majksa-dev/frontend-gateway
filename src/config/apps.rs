@@ -2,10 +2,16 @@ use gateway::cache;
 use serde::Deserialize;
 use std::collections::HashMap;
 
-use super::app::{AppConfig, AppConfigRaw};
+use crate::app::rewrite_static;
+
+use super::{
+    app::{AppConfig, AppConfigRaw},
+    upstream::Upstream,
+};
 
 #[derive(Debug, Clone)]
 pub struct Apps {
+    pub cdn: Upstream,
     pub apps: HashMap<String, AppConfig>,
 }
 
@@ -18,12 +24,16 @@ impl Apps {
         for (name, config) in data.apps {
             apps.insert(name.clone(), AppConfig::from_raw(config, name));
         }
-        Apps { apps }
+        Apps {
+            apps,
+            cdn: data.cdn,
+        }
     }
 }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppsRaw {
+    pub cdn: Upstream,
     pub apps: HashMap<String, AppConfigRaw>,
 }
 
@@ -42,6 +52,21 @@ impl From<&Apps> for cache::Builder {
                 (
                     name.clone(),
                     HashMap::<String, cache::config::Endpoint>::from(app),
+                )
+            })
+            .collect()
+    }
+}
+
+impl From<&Apps> for rewrite_static::Builder {
+    fn from(value: &Apps) -> Self {
+        value
+            .apps
+            .iter()
+            .map(|(name, app)| {
+                (
+                    name.clone(),
+                    HashMap::<String, rewrite_static::config::Endpoint>::from(app),
                 )
             })
             .collect()

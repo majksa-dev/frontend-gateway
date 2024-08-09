@@ -20,7 +20,7 @@ async fn main() {
     match app::build(env).await {
         Ok(server) => server.run().await,
         Err(err) => {
-            error!("Failed to build the server: {}", err);
+            error!("Failed to build the server: {:?}", err);
         }
     }
 }
