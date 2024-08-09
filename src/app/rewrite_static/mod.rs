@@ -17,30 +17,6 @@ type Context = MiddlewareCtx<(), context::Endpoint>;
 pub struct Builder(HashMap<String, HashMap<String, config::Endpoint>>);
 
 impl Builder {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn add_endpoint(
-        mut self,
-        app: &str,
-        endpoint_id: &str,
-        endpoint: config::Endpoint,
-    ) -> Self {
-        match self.0.get_mut(app) {
-            Some(config) => {
-                config.insert(endpoint_id.to_string(), endpoint);
-            }
-            None => {
-                self.0.insert(
-                    app.to_string(),
-                    HashMap::from([(endpoint_id.to_string(), endpoint)]),
-                );
-            }
-        };
-        self
-    }
-
     pub fn build(self) -> MiddlewareBuilder {
         let config: Config = self
             .0
