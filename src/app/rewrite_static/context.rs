@@ -107,3 +107,64 @@ impl ConfigToContext for config::Substitution {
         Ok(Substitution::new(self.from, self.to))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_cdn_rewrite() {
+        let endpoint = config::Endpoint {
+            rewrite: config::Rewrite::None,
+            cdn_app: Some("cdn".into()),
+        };
+        let endpoint = endpoint.into_context().await.unwrap();
+        assert_eq!(endpoint.rewrite("/hello".into()), "/cdn/hello".to_string());
+    }
+
+    #[tokio::test]
+    async fn test_cdn_rewrite_full() {
+        let endpoint = config::Endpoint {
+            rewrite: config::Rewrite::Full("endpoint".into()),
+            cdn_app: Some("cdn".into()),
+        };
+        let endpoint = endpoint.into_context().await.unwrap();
+        assert_eq!(
+            endpoint.rewrite("/hello".into()),
+            "/cdn/endpoint".to_string()
+        );
+    }
+
+    #[tokio::test]
+    async fn test_rewrite_full() {
+        let rewrite = config::Rewrite::Full("/app".into());
+        let rewrite = rewrite.into_context().await.unwrap();
+        assert_eq!(rewrite.rewrite("/hello".into()), "/app".to_string());
+    }
+
+    #[tokio::test]
+    async fn test_rewrite_search_and_replace() {
+        let rewrite = config::Rewrite::SearchAndReplace(vec![
+            config::Substitution {
+                from: "/hello".into(),
+                to: "/world".into(),
+            },
+            config::Substitution {
+                from: "/world".into(),
+                to: "/hello".into(),
+            },
+        ]);
+        let rewrite = rewrite.into_context().await.unwrap();
+        assert_eq!(
+            rewrite.rewrite("/hello/world".into()),
+            "/hello/hello".to_string()
+        );
+    }
+
+    #[tokio::test]
+    async fn test_rewrite_none() {
+        let rewrite = config::Rewrite::None;
+        let rewrite = rewrite.into_context().await.unwrap();
+        assert_eq!(rewrite.rewrite("/hello".into()), "/hello".to_string());
+    }
+}
