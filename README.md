@@ -15,7 +15,7 @@ A Rust Frontend Gateway built on top of custom gateway library.
 
 <!-- x-release-please-start-version -->
 
-`docker run --rm -p 80:80 ghcr.io/majksa-dev/frontend-gateway:0.2.5`
+`docker run --rm -p 80:80 ghcr.io/majksa-dev/frontend-gateway:0.2.6`
 
 <!-- x-release-please-end -->
 

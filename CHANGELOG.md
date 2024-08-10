@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.6](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.5...v0.2.6) (2024-08-10)
+
+
+### Bug Fixes
+
+* **deps:** bump gateway to 0.8.6 ([4d9db3a](https://github.com/majksa-dev/frontend-gateway/commit/4d9db3ae7487776cc67140da1d17e81a29503961))
+* **dockerfile:** healthcheck ([7f95780](https://github.com/majksa-dev/frontend-gateway/commit/7f95780fa9a071edf9936582d23968c111f26644))
+
 ## [0.2.5](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.4...v0.2.5) (2024-08-10)
 
 
