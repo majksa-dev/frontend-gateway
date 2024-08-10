@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.4...v0.2.5) (2024-08-10)
+
+
+### Bug Fixes
+
+* **deps:** bump gateway from 0.8.3 to 0.8.4 ([22e0360](https://github.com/majksa-dev/frontend-gateway/commit/22e03601697196b05977370469f38e8eaa4d2ab9))
+
 ## [0.2.4](https://github.com/majksa-dev/frontend-gateway/compare/v0.2.3...v0.2.4) (2024-08-09)
 
 
